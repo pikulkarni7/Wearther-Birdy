@@ -20,38 +20,59 @@ class RegistrationSerializer(serializers.ModelSerializer):
         fields = ['email', 'username', 'password', 'token']
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        return User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
+    
+    def update(self, instance, validated_data):
+        """Performs an update on a User."""
+
+        password = validated_data.pop('password', None)
+
+        for (key, value) in validated_data.items():
+            setattr(instance, key, value)
+
+        if password is not None:
+            instance.set_password(password)
+
+
+        instance.save()
+
+        return instance
+    
 
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.CharField(max_length=255)
-    username = serializers.CharField(max_length=255, read_only=True)
+    
+    username = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=128, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
+    
+    class Meta:
+        model = User
+        # List all of the fields that could possibly be included in a request
+        # or response, including fields specified explicitly above.
+        fields = ['username', 'email', 'password']
 
     def validate(self, data):
     
-        email = data.get('email', None)
+        username = data.get('username', None)
         password = data.get('password', None)
 
-        # Raise an exception if an
-        # email is not provided.
-        if email is None:
+        print(username)
+  
+        if username is None:
             raise serializers.ValidationError(
-                'An email address is required to log in.'
+                'A username is required to log in.'
             )
 
-        # Raise an exception if a
-        # password is not provided.
         if password is None:
             raise serializers.ValidationError(
                 'A password is required to log in.'
             )
-
-        user = authenticate(username=email, password=password)
+        user = authenticate(username=username, password=password)
+        
         if user is None:
             raise serializers.ValidationError(
-                'A user with this email and password was not found.'
+                'A user with this credentials was not found.'
             )
 
 
@@ -59,7 +80,7 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 'This user has been deactivated.'
             )
-
+            
         return {
             'email': user.email,
             'username': user.username,
@@ -78,8 +99,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'password', 'token',)
-        read_only_fields = ('token',)
+        fields = ('email', 'username', 'password')
+        #read_only_fields = ('token',)
 
 
     def update(self, instance, validated_data):

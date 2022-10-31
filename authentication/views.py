@@ -11,7 +11,7 @@ from .serializers import RegistrationSerializer, LoginSerializer, UserSerializer
 class RegistrationAPIView(APIView):
     # Allow any user (authenticated or not) to hit this endpoint.
     permission_classes = (AllowAny,)
-    renderer_classes = (UserJSONRenderer,)
+    # renderer_classes = (UserJSONRenderer,)
     serializer_class = RegistrationSerializer
 
     def post(self, request):
@@ -21,12 +21,13 @@ class RegistrationAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({"message": 'REGISTERED SUCCESFULLY', 
+                         "user" : serializer.data}, status=status.HTTP_201_CREATED)
 
 
 class LoginAPIView(APIView):
     permission_classe = (AllowAny,)
-    renderer_classes = (UserJSONRenderer,)
+    # renderer_classes = (UserJSONRenderer,)
     serializer_class  = LoginSerializer
     
     def post(self, request):
@@ -34,7 +35,10 @@ class LoginAPIView(APIView):
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        print(serializer.data)
+        
+        return Response({"message": 'AUTHENTICATED SUCCESFULLY', 
+                         "user": serializer.data}, status=status.HTTP_202_ACCEPTED)
 
 
 class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
