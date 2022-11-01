@@ -1,4 +1,3 @@
-from traceback import print_tb
 import requests
 import json
 from rest_framework import status
@@ -24,19 +23,14 @@ def fetchweather_coords(request):
             
             lat = coords.get('lat')
             long = coords.get('lon')
-            
-            #access openweather api
             payload = {
                 'lat' : lat,
                 'lon' : long,
                 'appid' : OPENWEATHER_APIKEY,
                 'units' : 'metric',
             }
-            
-            r = requests.get('https://api.openweathermap.org/data/2.5/weather', 
-                            params=payload)
-            
-            data = json.loads(r.text)
+
+            data = fetch_openweather_data(payload=payload)
             
             filtered_data = filter_weather_data(data)
 
@@ -47,6 +41,14 @@ def fetchweather_coords(request):
             return Response({"message" : "Couldn't fetch weather"})
     
     
+def fetch_openweather_data(payload) -> dict:
+            
+    #access openweather api
+    
+    r = requests.get('https://api.openweathermap.org/data/2.5/weather', 
+                    params=payload)
+        
+    return json.loads(r.text)
 
 
 def filter_weather_data(weather) -> dict:

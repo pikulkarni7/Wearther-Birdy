@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from utils import weather_util
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('authentication/', include('authentication.urls', namespace='authentication')),
-    path('weather/fetchcurrent/', weather_util.fetchweather_coords),
+    path('', include('utils.util_urls') )
+    
 ]
