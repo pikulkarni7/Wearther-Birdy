@@ -17,9 +17,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'username', 'password', 'token']
+        fields = ['email', 'username', 'password', 'is_staff', 'token']
 
     def create(self, validated_data):
+        if validated_data['is_staff'] == 1:
+            return User.objects.create_superuser(validated_data['username'], validated_data['email'], validated_data['password'])
         return User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
     
     def update(self, instance, validated_data):
@@ -99,7 +101,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'password')
+        fields = ('email', 'username', 'password', 'is_staff')
         #read_only_fields = ('token',)
 
 
