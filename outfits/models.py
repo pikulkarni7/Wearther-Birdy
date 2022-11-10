@@ -9,10 +9,10 @@ class Category(models.Model):
         
     
 class Product(models.Model):  
-    brand = models.CharField(max_length=10)
-    model = models.CharField(max_length=10)
+    brand = models.CharField(max_length=20)
+    model = models.CharField(max_length=20)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    shade = models.CharField(max_length=10)
+    shade = models.CharField(max_length=20)
     picture = models.CharField(max_length=250)
     weather_value = models.IntegerField()
 
