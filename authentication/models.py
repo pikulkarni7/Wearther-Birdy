@@ -42,6 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     username = models.CharField(db_index=True, max_length=255, unique=True)
     email = models.EmailField(db_index=False, unique=False)
+    gender = models.CharField(max_length=1, default='')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -74,6 +75,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.username
 
+    
+    def get_gender(self):
+        return self.gender
+        
 
     def _generate_jwt_token(self):
         

@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     
     'authentication',
     'outfits',
-    'mptt',
+    
 ]
 
 MIDDLEWARE = [

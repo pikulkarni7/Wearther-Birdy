@@ -136,6 +136,8 @@ class GarmentTest(TestCase):
         
     def test_suggestions(self):
         
+    
+        
         print('-----------TEMP=10---------')
         suggestions_1 = compute_suggestions(temperature=10, gender='M')
         print(suggestions_1)

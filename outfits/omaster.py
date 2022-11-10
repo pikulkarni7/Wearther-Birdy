@@ -1,5 +1,5 @@
 import typing
-from django.core.serializers import serialize
+from django.core import serializers
 
 from .models import Product, Category
 
@@ -92,8 +92,8 @@ def compute_suggestions(temperature:float, gender:str) -> dict:
     
     __top_optional__ = __top_optional__.difference(__top_must__)
     
-    result['bottom'] = __bottom__.values('model')
-    result['top_must'] = __top_must__.values('model')
-    result['top_optional'] = __top_optional__.values('model')
+    result['bottom'] = serializers.serialize(format = 'json', queryset = __bottom__)
+    result['top_must'] = serializers.serialize(format = 'json', queryset = __top_must__)
+    result['top_optional'] = serializers.serialize(format = 'json', queryset = __top_optional__)
     
     return result

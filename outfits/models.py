@@ -1,4 +1,3 @@
-from mptt.models import MPTTModel, TreeForeignKey
 from django.db import models
 
    
