@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
 
+from .serializers import ProductSerializer
+
 
 @csrf_exempt
 @api_view(['POST'])
@@ -23,7 +25,20 @@ def get_suggestions(request):
         
         try:
             result = compute_suggestions(temperature=temp, gender=gender)
-            return Response(result, status=status.HTTP_200_OK)
+            response = []
+            
+            print(result)
+            
+            for key in result:
+                product_list = []
+                for product in result[key]:
+                    serializer = ProductSerializer(product)
+                    product_list.append(serializer.data)
+                response.append({key:product_list})
+            
+            
+            return Response(response, status=status.HTTP_200_OK)
+        
         except Exception as e:
             print(e)
             return Response({"message" : "Couldn't fetch suggestions"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

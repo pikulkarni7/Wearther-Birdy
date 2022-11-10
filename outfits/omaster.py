@@ -2,17 +2,17 @@ import typing
 from django.core import serializers
 
 from .models import Product, Category
-
+from .serializers import ProductSerializer
 
 
 def compute_suggestions(temperature:float, gender:str) -> dict:
 
     result = {}
-    
-    queryset = Product.objects.none()
+
     __bottom__ = Product.objects.none()
     __top_must__ = Product.objects.none()
-    __top_optional__ = Product.objects.none()
+    __top_optional_1__ = Product.objects.none()
+    __top_optional_2__ = Product.objects.none()
     
     __diff_temp__ = 26.00 - temperature
     
@@ -61,39 +61,31 @@ def compute_suggestions(temperature:float, gender:str) -> dict:
             )
         )
         
-        __top_optional__ = __top_optional__.union(
+        __top_optional_1__ = __top_optional_1__.union(
             Product.objects.filter(
                 category = top_optional_1,                
             )
         )
         
         if  __diff_temp__ > 6:
-            __top_must__ = __top_must__.union(
+            __top_optional_1__ =  __top_optional_1__.union(
                 Product.objects.filter(
                      category = top_optional_1,
                      weather_value__lt = 10,
                      weather_value__gte = 5 
                 )
-            )
-            
-            __top_optional__ = __top_optional__.union(
-            Product.objects.filter(
-                category =  top_optional_2,                
-            )
-        )
-            
+            )            
         
         if __diff_temp__ > 15:
-            __top_must__ = __top_must__.union(
+            __top_optional_2__ = __top_optional_2__.union(
                 Product.objects.filter(
                     category = top_optional_2
                 )
             )
     
-    __top_optional__ = __top_optional__.difference(__top_must__)
-    
-    result['bottom'] = serializers.serialize(format = 'json', queryset = __bottom__)
-    result['top_must'] = serializers.serialize(format = 'json', queryset = __top_must__)
-    result['top_optional'] = serializers.serialize(format = 'json', queryset = __top_optional__)
+    result['bottom'] =  __bottom__
+    result['top_must'] =  __top_must__
+    result['top_optional_1'] = __top_optional_1__
+    result['top_optional_2'] =  __top_optional_2__
     
     return result
