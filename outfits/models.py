@@ -1,5 +1,6 @@
 from django.db import models
 
+from authentication.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=50, null=False)
@@ -26,6 +27,11 @@ class Formality(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     value = models.CharField(choices=F_VALUES, max_length=1)
     
+
+class Suggestion(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 
     

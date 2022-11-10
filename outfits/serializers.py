@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
-from .models import Product
+
+from authentication.serializers import UserSerializer
+from .models import Product, Suggestion
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -11,3 +13,13 @@ class ProductSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         return Product.objects.create(**validated_data)
+    
+
+class SuggestionSerializer(serializers.ModelSerializer):
+    
+    product = ProductSerializer(read_only=True)
+    
+    class Meta:
+        model = Suggestion
+        fields = ['product',]
+    

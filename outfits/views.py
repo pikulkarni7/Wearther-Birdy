@@ -9,7 +9,8 @@ from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
 
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, SuggestionSerializer
+from .queries import save_suggestion_history, get_saved_suggestions
 
 
 
@@ -26,6 +27,8 @@ def get_suggestions(request):
         
         try:
             result = compute_suggestions(temperature=temp, gender=gender)
+            print(result)
+            save_suggestion_history(result, user=request.user)
             response = []
             
             print(result)
@@ -45,6 +48,28 @@ def get_suggestions(request):
             return Response({"message" : "Couldn't fetch suggestions"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
         
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated,])
+def get_suggestion_history(request):
+    
+    if request.method == 'POST':
+        try:
+            date = request.data['date']
+            
+            queryset = get_saved_suggestions(date, request.user)
+            print(len(queryset))
+            serializer = SuggestionSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({"message" : "Couldn't fetch history"}, 
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    
+    
+    
     
     
     
