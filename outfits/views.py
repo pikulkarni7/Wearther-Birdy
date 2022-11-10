@@ -12,6 +12,7 @@ from django.core.serializers import serialize
 from .serializers import ProductSerializer
 
 
+
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated,])

@@ -28,7 +28,7 @@ def compute_suggestions(temperature:float, gender:str) -> dict:
        __bottom__ = __bottom__.union(
                 Product.objects.filter(
                     category = bottom,
-                    weather_value__gt = 2
+                    weather_value__gt = 2       #pants
                 )
             ) 
     else:
