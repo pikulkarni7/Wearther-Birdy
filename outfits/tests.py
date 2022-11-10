@@ -136,8 +136,26 @@ class GarmentTest(TestCase):
         
     def test_suggestions(self):
         
-        suggestions = compute_suggestions(temperature=30, gender='M')
-        print(suggestions)
+        print('-----------TEMP=10---------')
+        suggestions_1 = compute_suggestions(temperature=10, gender='M')
+        print(suggestions_1)
+        
+        print('-----------TEMP=16---------')
+        suggestions_2 = compute_suggestions(temperature=16, gender='M')
+        print(suggestions_2)
+
+        print('-----------TEMP=24---------')
+        suggestions_3 = compute_suggestions(temperature=24, gender='M')
+        print(suggestions_3)
+        
+        
+        print('-----------TEMP=30---------')
+        suggestions_4 = compute_suggestions(temperature=30, gender='M')
+        print(suggestions_4)
+        
+        print('-----------TEMP=30, FEMALE---------')
+        suggestions_5 = compute_suggestions(temperature=30, gender='F')
+        print(suggestions_5)
         
         assert 1==1
         

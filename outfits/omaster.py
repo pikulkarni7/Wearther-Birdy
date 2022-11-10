@@ -1,4 +1,5 @@
 import typing
+from django.core.serializers import serialize
 
 from .models import Product, Category
 
@@ -17,24 +18,25 @@ def compute_suggestions(temperature:float, gender:str) -> dict:
     
     #check for female user
     if temperature >= 24 and gender == 'F':
-        result['women'] = Product.objects.filter(Product.category=='women')
+        result['women'] = Product.objects.filter(category=Category.objects.get(name='women')).values()
+        return result
     
     #bottom
     bottom = Category.objects.get(name='bottomwear')
        
-    if __diff_temp__ < 0:
-        __bottom__.union(
+    if temperature < 24:
+       __bottom__ = __bottom__.union(
                 Product.objects.filter(
                     category = bottom,
                     weather_value__gt = 2
                 )
             ) 
     else:
-        __bottom__.union(
+        __bottom__ = __bottom__.union(
             Product.objects.filter(
                 category = bottom,
                 weather_value__lte = 2         #shorts
-            ).values()
+            )
         )
         
     #upperwear
@@ -44,52 +46,54 @@ def compute_suggestions(temperature:float, gender:str) -> dict:
     top_optional_2 = Category.objects.get(name='top_optional_2')
 
     if __diff_temp__ <= 0:
-        __top_must__.union(
+        __top_must__ = __top_must__.union(
             Product.objects.filter(
                 category = top_required,
                 weather_value__lt = 5
-            ).values()
+            )
         )
         
     elif __diff_temp__ > 0:
-        __top_must__.union(
+        __top_must__ = __top_must__.union(
             Product.objects.filter(
                 category = top_required,
                 weather_value__lt = 5
-            ).values()
+            )
         )
         
-        __top_optional__.union(
+        __top_optional__ = __top_optional__.union(
             Product.objects.filter(
                 category = top_optional_1,                
-            ).values()
+            )
         )
         
-        if  __diff_temp__ > 10:
-            __top_must__.union(
+        if  __diff_temp__ > 6:
+            __top_must__ = __top_must__.union(
                 Product.objects.filter(
                      category = top_optional_1,
                      weather_value__lt = 10,
                      weather_value__gte = 5 
-                ).values()
+                )
             )
             
-            __top_optional__.union(
+            __top_optional__ = __top_optional__.union(
             Product.objects.filter(
                 category =  top_optional_2,                
-            ).values()
+            )
         )
             
         
         if __diff_temp__ > 15:
-            __top_must__.union(
+            __top_must__ = __top_must__.union(
                 Product.objects.filter(
                     category = top_optional_2
-                ).values()
+                )
             )
     
-    result['bottom'] = __bottom__
-    result['top_must'] = __top_must__
-    result['top_optional'] = __top_optional__
+    __top_optional__ = __top_optional__.difference(__top_must__)
+    
+    result['bottom'] = __bottom__.values('model')
+    result['top_must'] = __top_must__.values('model')
+    result['top_optional'] = __top_optional__.values('model')
     
     return result
