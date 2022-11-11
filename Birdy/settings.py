@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+# Read param from environmental variable
+env = environ.Env(
+    DEBUG=(bool, True)
+)
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure--$l2vuh*p_jy#k8pgyba^v(!q^-92$km!a*p^&fcs9ff!ndpu%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -39,10 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'authentication',
     'outfits',
-    
+
 ]
 
 MIDDLEWARE = [
@@ -53,7 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
+
     'corsheaders.middleware.CorsMiddleware',
 ]
 
@@ -89,14 +96,10 @@ WSGI_APPLICATION = 'Birdy.wsgi.application'
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'birdy',
-        'USER': 'postgres',
-        'PASSWORD': 'pass1234',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': env.db(
+        'DATABASE_URL',
+        default='psql://postgres:pass1234@localhost:5432/birdy'
+    )
 }
 
 # Password validation
