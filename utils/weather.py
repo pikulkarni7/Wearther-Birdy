@@ -63,6 +63,9 @@ def filter_weather_data(weather) -> dict:
         '1h',                  #rain 1 hr
         'country',
         'pressure',
+        'humidity',
+        'feels_like',
+        'icon',
     }
     
     result = {}
