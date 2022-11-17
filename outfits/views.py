@@ -7,7 +7,7 @@ from .omaster import compute_suggestions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
-from django.core.serializers import serialize
+
 
 
 from .serializers import ProductSerializer, SuggestionSerializer, WeatherSerializer
@@ -24,7 +24,11 @@ def get_suggestions(request):
         curr_user = request.user
         gender = curr_user.get_gender()
         
-        temp = int(request.session['weather']['temp'])
+        if request.sesssion['weather'] is not None:
+            temp = int(request.session['weather']['temp'])
+            print("Fetched weather data from session")
+        else:
+            temp = request.data['temp']
         
         try:
             result = compute_suggestions(temperature=temp, gender=gender)            
