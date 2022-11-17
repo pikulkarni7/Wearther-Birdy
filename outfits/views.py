@@ -9,7 +9,8 @@ from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
 
-from .serializers import ProductSerializer, SuggestionSerializer
+
+from .serializers import ProductSerializer, SuggestionSerializer, WeatherSerializer
 from .queries import save_suggestion_history, get_saved_suggestions
 
 
@@ -23,15 +24,14 @@ def get_suggestions(request):
         curr_user = request.user
         gender = curr_user.get_gender()
         
-        temp = int(request.data['temp'])
+        temp = int(request.session['weather']['temp'])
         
         try:
-            result = compute_suggestions(temperature=temp, gender=gender)
-            print(result)
-            save_suggestion_history(result, user=request.user)
-            response = []
+            result = compute_suggestions(temperature=temp, gender=gender)            
             
-            print(result)
+            save_suggestion_history(result, user=request.user, weather_dict= request.session['weather'])
+            
+            response = []
             
             for key in result:
                 product_list = []
@@ -59,13 +59,25 @@ def get_suggestion_history(request):
             date = request.data['date']
             
             queryset = get_saved_suggestions(date, request.user)
-            print(len(queryset))
-            serializer = SuggestionSerializer(queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            weather = WeatherSerializer(queryset.first().weather)
+            suggestions = SuggestionSerializer(queryset, many=True)
+            
+            response = {}            
+            response.update({"weather" : weather.data})
+            response.update({"suggestions": suggestions.data})
+            
+            return Response(response, status=status.HTTP_200_OK)
+        
         except Exception as e:
             print(e)
             return Response({"message" : "Couldn't fetch history"}, 
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+
+
+
+            
+        
     
     
     

@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime 
 
 
 
@@ -30,14 +31,17 @@ def fetchweather_coords(request):
             }
 
             data = fetch_openweather_data(payload=payload)
-            
-            filtered_data = filter_weather_data(data)
+            filtered_data = filter_weather_data(data)            
+            filtered_data['dt'] = datetime.utcfromtimestamp(filtered_data['dt']).strftime('%Y-%m-%d %H:%M:%S')
+            request.session['weather'] = filtered_data      #add weather to session
 
             return Response(filtered_data, status=status.HTTP_200_OK)
         
         except Exception as e:
             print(e)
             return Response({"message" : "Couldn't fetch weather"})
+    
+    
     
     
 def fetch_openweather_data(payload) -> dict:
@@ -84,6 +88,7 @@ def filter_weather_data(weather) -> dict:
                     
     if 'rain' not in weather.keys():
         result['rain'] = 'N/A'
-                
+        
+                 
     return result
     

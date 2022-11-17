@@ -2,7 +2,9 @@ from rest_framework import serializers
 
 
 from authentication.serializers import UserSerializer
-from .models import Product, Suggestion
+from .models import Product, Suggestion, Weather
+
+
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -13,6 +15,18 @@ class ProductSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         return Product.objects.create(**validated_data)
+    
+
+
+class WeatherSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Weather
+        fields = '__all__'
+    
+    def create(self, validated_data):
+        return Product.objects.create(**validated_data)
+    
     
 
 class SuggestionSerializer(serializers.ModelSerializer):
