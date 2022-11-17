@@ -29,3 +29,12 @@ def get_saved_suggestions(date, user):
         .order_by("product_id")
         .distinct("product_id")
     )
+
+
+def get_saved_dates(user):
+    return (
+        Suggestion.objects.filter(user=user)
+        .order_by("date")
+        .values_list("date")
+        .distinct("date")
+    )
