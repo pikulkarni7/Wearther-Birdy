@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('outfits', '0004_remove_category_parent_alter_product_category_and_more'),
+        ("outfits", "0004_remove_category_parent_alter_product_category_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='product',
-            name='weather_value',
+            model_name="product",
+            name="weather_value",
             field=models.IntegerField(),
         ),
     ]

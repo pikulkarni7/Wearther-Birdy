@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('outfits', '0010_weather_suggestion_weather'),
+        ("outfits", "0010_weather_suggestion_weather"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='weather',
-            name='rain',
+            model_name="weather",
+            name="rain",
             field=models.FloatField(null=True),
         ),
     ]

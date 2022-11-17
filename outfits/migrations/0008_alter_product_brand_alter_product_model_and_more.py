@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('outfits', '0007_delete_suggestion'),
+        ("outfits", "0007_delete_suggestion"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='product',
-            name='brand',
+            model_name="product",
+            name="brand",
             field=models.CharField(max_length=20),
         ),
         migrations.AlterField(
-            model_name='product',
-            name='model',
+            model_name="product",
+            name="model",
             field=models.CharField(max_length=20),
         ),
         migrations.AlterField(
-            model_name='product',
-            name='shade',
+            model_name="product",
+            name="shade",
             field=models.CharField(max_length=20),
         ),
     ]

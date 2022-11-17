@@ -15,30 +15,34 @@ class RegistrationAPIView(APIView):
     serializer_class = RegistrationSerializer
 
     def post(self, request):
-        user = request.data.get('user', {})
+        user = request.data.get("user", {})
 
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        return Response({"message": 'REGISTERED SUCCESFULLY', 
-                         "user" : serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(
+            {"message": "REGISTERED SUCCESFULLY", "user": serializer.data},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class LoginAPIView(APIView):
     permission_classe = (AllowAny,)
     # renderer_classes = (UserJSONRenderer,)
-    serializer_class  = LoginSerializer
-    
+    serializer_class = LoginSerializer
+
     def post(self, request):
-        user = request.data.get('user', {})
+        user = request.data.get("user", {})
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
 
         print(serializer.data)
-        
-        return Response({"message": 'AUTHENTICATED SUCCESFULLY', 
-                         "user": serializer.data}, status=status.HTTP_202_ACCEPTED)
+
+        return Response(
+            {"message": "AUTHENTICATED SUCCESFULLY", "user": serializer.data},
+            status=status.HTTP_202_ACCEPTED,
+        )
 
 
 class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
@@ -55,7 +59,7 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
-        serializer_data = request.data.get('user', {})
+        serializer_data = request.data.get("user", {})
         serializer = self.serializer_class(
             request.user, data=serializer_data, partial=True
         )
