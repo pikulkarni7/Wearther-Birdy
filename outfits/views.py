@@ -23,30 +23,39 @@ def get_suggestions(request):
     if request.method == "POST":
         curr_user = request.user
         gender = curr_user.get_gender()
-        temp = int(request.session["weather"]["temp"])
 
-        try:
-            result = compute_suggestions(temperature=temp, gender=gender)
+        if request.data["weather"] is not None:
 
-            save_suggestion_history(
-                result, user=request.user, weather_dict=request.session["weather"]
-            )
+            temp = int(request.data["weather"]["temp"])
 
-            response = []
+            try:
+                result = compute_suggestions(temperature=temp, gender=gender)
 
-            for key in result:
-                product_list = []
-                for product in result[key]:
-                    serializer = ProductSerializer(product)
-                    product_list.append(serializer.data)
-                response.append({key: product_list})
+                save_suggestion_history(
+                    result, user=request.user, weather_dict=request.data["weather"]
+                )
 
-            return Response(response, status=status.HTTP_200_OK)
+                response = []
 
-        except Exception as e:
-            print(e)
+                for key in result:
+                    product_list = []
+                    for product in result[key]:
+                        serializer = ProductSerializer(product)
+                        product_list.append(serializer.data)
+                    response.append({key: product_list})
+
+                return Response(response, status=status.HTTP_200_OK)
+
+            except Exception as e:
+                print(e)
+                return Response(
+                    {"message": "Couldn't fetch suggestions"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+        else:
+
             return Response(
-                {"message": "Couldn't fetch suggestions"},
+                {"message": "No weather data found in request"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
