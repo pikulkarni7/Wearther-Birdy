@@ -47,3 +47,24 @@ def get_session_variable(request):
                 {"message": "Error fetching session variable"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes(
+    [
+        IsAuthenticated,
+    ]
+)
+def get_session_key(request):
+    if request.method == "POST":
+        try:
+            return Response(
+                {"session_key": request.session._session_key}, status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            print(e)
+            return Response(
+                {"message": "Error fetching session key"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
