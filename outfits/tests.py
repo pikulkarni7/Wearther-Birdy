@@ -1,6 +1,4 @@
 from django.test import TestCase
-import json
-from .models import Product, Category
 from .queries import get_products_by_category
 from .omaster import compute_suggestions
 from django.core.serializers import serialize

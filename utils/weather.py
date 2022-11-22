@@ -7,6 +7,8 @@ from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 
+from .timezone import getLocalTime
+
 
 OPENWEATHER_APIKEY = "51221f79a18cef82c14e9e73aad25715"
 
@@ -32,9 +34,7 @@ def fetchweather_coords(request):
 
             data = fetch_openweather_data(payload=payload)
             filtered_data = filter_weather_data(data)
-            filtered_data["dt"] = datetime.utcfromtimestamp(
-                filtered_data["dt"]
-            ).strftime("%Y-%m-%d %H:%M:%S")
+            filtered_data["dt"] = getLocalTime(lat=lat, lon=long)
             request.session["weather"] = filtered_data  # add weather to session
 
             return Response(filtered_data, status=status.HTTP_200_OK)
