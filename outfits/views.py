@@ -74,7 +74,6 @@ def get_suggestion_history(request):
             date = request.data["date"]
 
             queryset = get_saved_suggestions(date, request.user)
-
             if queryset.count() > 0:
                 weather = WeatherSerializer(queryset.first().weather)
                 suggestions = SuggestionSerializer(queryset, many=True)
@@ -83,9 +82,20 @@ def get_suggestion_history(request):
                 for each in suggestions.data:
                     suggestions_list.append(each["product"])
 
+                # group by category
+                suggestions_grouped = {}
+                for product in suggestions_list:
+                    if product["category"]["name"] in suggestions_grouped.keys():
+                        suggestions_grouped[product["category"]["name"]].append(product)
+                        product.pop("category")
+                    else:
+                        suggestions_grouped[product["category"]["name"]] = []
+                        suggestions_grouped[product["category"]["name"]].append(product)
+                        product.pop("category")
+
                 response = {}
                 response.update({"weather": weather.data})
-                response.update({"suggestions": suggestions_list})
+                response.update({"suggestions": suggestions_grouped})
 
                 return Response(response, status=status.HTTP_200_OK)
             else:
