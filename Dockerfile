@@ -1,11 +1,13 @@
-FROM python:3.9-slim AS builder
+FROM python:3.9 AS builder
 
 WORKDIR /app 
 
-RUN pip3 install gunicorn
+RUN apt update
+RUN apt install libgeos-dev -y
 
 COPY requirements.txt /app
 RUN pip3 install -r requirements.txt --no-cache-dir
+RUN pip3 install gunicorn
 
 COPY . /app 
 
