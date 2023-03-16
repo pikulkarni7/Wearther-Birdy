@@ -22,4 +22,5 @@ urlpatterns = [
     path("authentication/", include("authentication.urls", namespace="authentication")),
     path("", include("utils.urls")),
     path("outfits/", include("outfits.urls", namespace="outfits")),
+    path("notifications/", include("notifications.urls", namespace="notifications")),
 ]
