@@ -63,4 +63,4 @@ def cage_task_notify(sub):
         "longitude": serializer_data["longitude"],
     }
     r = requests.post(CAGE_SERVICE_URL + "api/notify", data=payload)
-    return json.loads(r.text)
+    return None
