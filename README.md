@@ -2,6 +2,8 @@
 This is the backend for Wearther - Application that suggests outfit based on current weather
 Built using Django
 
+(Mar 2023) Added user subscriptions and SMS notifications for this service, by linking this to another microservice - Cage. Check it out here
+https://github.com/pikulkarni7/cage
 ## Installation and Instructions
 After cloning the repository, open terminal inside the current directory
 
@@ -24,3 +26,4 @@ Run backend server locally
 ```bash
 $ python manage.py runserver
 ```
+
